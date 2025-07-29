@@ -5,14 +5,15 @@ from vec3 import Vec3
 from sphere import Sphere
 from camera import Camera
 import pygame
+from material import Material
 
 def clamp(val, minv, maxv):
     return max(minv, min(val, maxv))
 
 if __name__ == '__main__':
     # --- Set your render and output resolution here ---
-    render_width, render_height = 320, 180      # Raytracer resolution (fast)
-    output_width, output_height = 1280, 720     # Display resolution (upscaled)
+    render_width, render_height = 1280, 720      # Raytracer resolution (fast)
+    output_width, output_height = 1980, 1080     # Display resolution (upscaled)
 
     viewer = ImageViewer(width=output_width, height=output_height)
     viewer.start()
@@ -30,11 +31,11 @@ if __name__ == '__main__':
 
     # Scene: multiple spheres
     spheres = [
-        Sphere(Vec3(0, 0, 2), 0.5, (255, 0, 0)),
-        Sphere(Vec3(-1, 0.5, 3), 0.5, (0, 255, 0)),
-        Sphere(Vec3(1, -0.5, 4), 0.5, (0, 0, 255)),
-        Sphere(Vec3(0.5, 1, 3.5), 0.4, (255, 255, 0)),
-        Sphere(Vec3(-1.2, -0.8, 2.8), 0.3, (255, 0, 255)),
+        Sphere(Vec3(0, 0, 2), 0.5, Material((255, 0, 0), 0.5)),
+        Sphere(Vec3(-1, 0.5, 3), 0.5, Material((0, 255, 0), 0.5)),
+        Sphere(Vec3(1, -0.5, 4), 0.5, Material((0, 0, 255), 0.5)),
+        Sphere(Vec3(0.5, 1, 3.5), 0.4, Material((255, 255, 0), 0.5)),
+        Sphere(Vec3(-1.2, -0.8, 2.8), 0.3, Material((255, 0, 255), 0.5)),
     ]
 
     # --- Interactive loop with WASD and mouse ---

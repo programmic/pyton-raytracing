@@ -1,10 +1,11 @@
 from vec3 import Vec3
+from material import Material
 
 class Sphere:
     def __init__(
             self, center: Vec3,
             radius: float | int,
-            material = None):
+            material: Material = None):
         self.center = center
         self.radius = radius
         self.material = material

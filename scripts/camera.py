@@ -22,7 +22,7 @@ class Camera:
         self.near = near
         self.far = far
     
-    def render_frane(self, width, height, camera, spheres, max_bounces=3):
+    def render_frane(self, width, height, camera, spheres, max_bounces):
         img = np.zeros((height, width, 3), dtype=np.uint8)
         aspect = width / height
         fov = camera.fov

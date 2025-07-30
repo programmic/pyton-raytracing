@@ -6,14 +6,15 @@ from sphere import Sphere
 from camera import Camera
 import pygame
 from material import Material
+from PIL import Image, ImageDraw, ImageFont
 
 def clamp(val, minv, maxv):
     return max(minv, min(val, maxv))
 
 if __name__ == '__main__':
     # --- Set your render and output resolution here ---
-    render_width, render_height = 1280, 720      # Raytracer resolution (fast)
-    output_width, output_height = 1980, 1080     # Display resolution (upscaled)
+    render_width, render_height = 640, 360      # Raytracer resolution (fast)
+    output_width, output_height = 1280, 720     # Display resolution (upscaled)
 
     viewer = ImageViewer(width=output_width, height=output_height)
     viewer.start()
@@ -24,27 +25,29 @@ if __name__ == '__main__':
     # Camera setup
     camera = Camera(
         resolution=(render_width, render_height),
-        pos=Vec3(0, 0, -5),
+        pos=Vec3(0, 0, -3),
         rot=Vec3(0, 0, 0),
         fov=60.0
     )
 
     # Scene: multiple spheres
     spheres = [
-        Sphere(Vec3(0, 0, 2), 0.5, Material((255, 0, 0), 0.5)),
-        Sphere(Vec3(-1, 0.5, 3), 0.5, Material((0, 255, 0), 0.5)),
-        Sphere(Vec3(1, -0.5, 4), 0.5, Material((0, 0, 255), 0.5)),
-        Sphere(Vec3(0.5, 1, 3.5), 0.4, Material((255, 255, 0), 0.5)),
-        Sphere(Vec3(-1.2, -0.8, 2.8), 0.3, Material((255, 0, 255), 0.5)),
+        Sphere(Vec3(0, 0, 2), 0.5,          Material((255,   0,   0), 0.5)),
+        Sphere(Vec3(-1, 0.5, 3), 0.5,       Material((  0, 255,   0), 0.5)),
+        Sphere(Vec3(1, -0.5, 4), 0.5,       Material((  0,   0, 255), 0.5)),
+        Sphere(Vec3(0.5, 1, 3.5), 0.4,      Material((255, 255,   0), 0.5)),
+        Sphere(Vec3(-1.2, -0.8, 2.8), 0.3,  Material((255,   0, 255), 0.5)),
     ]
 
     # --- Interactive loop with WASD and mouse ---
     pygame.init()
     clock = pygame.time.Clock()
 
-    move_speed = 0.1
+    move_speed = 0.75
     mouse_sens = 0.2
     running = True
+
+    bounces = 15
 
     print("Use WASD to move, mouse to look. ESC to quit.")
 
@@ -92,7 +95,7 @@ if __name__ == '__main__':
             camera.pos.y -= move_speed
 
         # Render and display
-        img = camera.render_frane(render_width, render_height, camera, spheres)
+        img = camera.render_frane(render_width, render_height, camera, spheres, bounces)
         # Upscale to output resolution using pygame's smoothscale for quality
         surf = pygame.surfarray.make_surface(img.swapaxes(0, 1))
         surf_up = pygame.transform.smoothscale(surf, (output_width, output_height))
@@ -107,10 +110,18 @@ if __name__ == '__main__':
 
         # Draw FPS on image
         fps_text = f"FPS: {fps:.3f}"
-        surf_final = pygame.surfarray.make_surface(img_up.swapaxes(0, 1))
-        text_surf = font.render(fps_text, True, (255, 255, 255))
-        surf_final.blit(text_surf, (5, 5))
-        img_with_fps = pygame.surfarray.array3d(surf_final).swapaxes(0, 1)
+        # Convert numpy array to PIL Image
+        img_pil = Image.fromarray(img_up)
+        draw = ImageDraw.Draw(img_pil)
+        # Use a truetype font or default
+        try:
+            pil_font = ImageFont.truetype("consola.ttf", 24)
+        except:
+            pil_font = ImageFont.load_default()
+        draw.text((5, 5), fps_text, font=pil_font, fill=(255, 255, 255))
+
+        # Convert back to numpy array
+        img_with_fps = np.array(img_pil)
 
         viewer.set_image(img_with_fps)
 

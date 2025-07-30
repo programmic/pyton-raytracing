@@ -16,26 +16,30 @@ class Vec3:
             return Vec3(self.x + other.x, self.y + other.y, self.z + other.z)
         elif isinstance(other, (int, float)):
             return Vec3(self.x + other, self.y + other, self.z + other)
-        return NotImplemented
+        logging.info("Vec3.__add__: invalid operand type")
+        return None
 
     def __sub__(self, other):
         if isinstance(other, Vec3):
             return Vec3(self.x - other.x, self.y - other.y, self.z - other.z)
         elif isinstance(other, (int, float)):
             return Vec3(self.x - other, self.y - other, self.z - other)
-        return NotImplemented
+        logging.info("Vec3.__sub__: invalid operand type")
+        return None
 
     def __mul__(self, other):
         if isinstance(other, Vec3):
             return Vec3(self.x * other.x, self.y * other.y, self.z * other.z)
         elif isinstance(other, (int, float)):
             return Vec3(self.x * other, self.y * other, self.z * other)
-        return NotImplemented
+        logging.info("Vec3.__mul__: invalid operand type")
+        return None
 
     def __truediv__(self, other):
         if isinstance(other, (int, float)):
             return Vec3(self.x / other, self.y / other, self.z / other)
-        return NotImplemented
+        logging.info("Vec3.__truediv__: invalid operand type")
+        return None
         
     def __neg__(self):
         return Vec3(-self.x, -self.y, -self.z)
@@ -44,13 +48,16 @@ class Vec3:
         if key == 0 or key == "x": return self.x
         elif key == 1 or key == "y": return self.y
         elif key == 2 or key == "z": return self.z
-        return NotImplemented
+        logging.info("Vec3.__getitem__: invalid key")
+        return None
 
     def __setitem__(self, key, value):
         if key == 0 or key == "x": self.x = value
         elif key == 1 or key == "y": self.y = value
         elif key == 2 or key == "z": self.z = value
-        return NotImplemented
+        else:
+            logging.info("Vec3.__setitem__: invalid key")
+        return None
 
     def __str__(self):
         return f"({self.x}, {self.y}, {self.z})"
